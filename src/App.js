@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import QrScanner from 'react-qr-scanner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import './App.css'; // Asegúrate de importar el archivo CSS
+import './App.css';
 
 function App() {
   const [qrData, setQrData] = useState(null);
   const [error, setError] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
   const [scanning, setScanning] = useState(false);
+  const [cameraId, setCameraId] = useState(null);
+  const scannerRef = useRef(null);
 
   const handleScan = (data) => {
     if (data) {
@@ -45,6 +47,25 @@ function App() {
     margin: 'auto',
   };
 
+  useEffect(() => {
+    // Accede a la lista de dispositivos de cámara y selecciona la cámara trasera si está disponible
+    const getCameras = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length > 0) {
+          // Seleccionar la cámara trasera
+          const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
+          setCameraId(rearCamera.deviceId);
+        }
+      } catch (err) {
+        console.error('Error al obtener cámaras', err);
+      }
+    };
+
+    getCameras();
+  }, []);
+
   return (
     <div id="root">
       <nav className="navbar navbar-light bg-light shadow-lg p-3 mb-5 bg-white rounded">
@@ -58,7 +79,6 @@ function App() {
         </div>
       </nav>
 
-      {/* Main content */}
       <div className="container mt-5 text-center content">
         {qrData && (
           <p className="mt-3">
@@ -76,7 +96,6 @@ function App() {
           </p>
         )}
 
-        {/* Button to start scanning */}
         {!scanning ? (
           <button
             className="btn btn-primary mt-4"
@@ -104,7 +123,6 @@ function App() {
         )}
       </div>
 
-      {/* Footer */}
       <footer className="footer">
         © 2024 QR App Scanner
       </footer>
