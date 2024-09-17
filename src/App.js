@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import QrScanner from 'react-qr-scanner';
+import React, { useState } from 'react';
+import { Scanner } from '@yudiel/react-qr-scanner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
@@ -9,13 +9,12 @@ function App() {
   const [error, setError] = useState(null);
   const [apiResponse, setApiResponse] = useState(null);
   const [scanning, setScanning] = useState(false);
-  const [cameraId, setCameraId] = useState(null);
-  const scannerRef = useRef(null);
 
-  const handleScan = (data) => {
-    if (data) {
-      setQrData(data.text);
-      sendQrDataToApi(data.text);
+  const handleScan = (result) => {
+    if (result.length > 0) {
+      const data = result[0].rawValue;
+      setQrData(data);
+      sendQrDataToApi(data);
       setScanning(false); // Desactivamos el escáner después de leer
     }
   };
@@ -47,24 +46,12 @@ function App() {
     margin: 'auto',
   };
 
-  useEffect(() => {
-    // Accede a la lista de dispositivos de cámara y selecciona la cámara trasera si está disponible
-    const getCameras = async () => {
-      try {
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        if (videoDevices.length > 0) {
-          // Seleccionar la cámara trasera
-          const rearCamera = videoDevices.find(device => device.label.toLowerCase().includes('back')) || videoDevices[0];
-          setCameraId(rearCamera.deviceId);
-        }
-      } catch (err) {
-        console.error('Error al obtener cámaras', err);
-      }
-    };
-
-    getCameras();
-  }, []);
+  // Configuración de constraints para usar la cámara trasera
+  const constraints = {
+    video: {
+      facingMode: { exact: 'environment' }
+    }
+  };
 
   return (
     <div id="root">
@@ -105,13 +92,12 @@ function App() {
           </button>
         ) : (
           <div>
-            <QrScanner
-              delay={300}
-              style={previewStyle}
-              onError={handleError}
+            <Scanner
               onScan={handleScan}
-              facingMode={{ exact: 'environment' }} // Usa la cámara trasera
-              ref={scannerRef}
+              onError={handleError}
+              constraints={constraints}
+              scanDelay={300}
+              style={previewStyle}
             />
             <button
               className="btn btn-secondary mt-3"
