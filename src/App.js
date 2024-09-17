@@ -91,6 +91,8 @@ function App() {
               style={previewStyle}
               onError={handleError}
               onScan={handleScan}
+              facingMode={{ exact: 'environment' }} // Usa la cámara trasera
+              ref={scannerRef}
             />
             <button
               className="btn btn-secondary mt-3"
