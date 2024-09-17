@@ -27,14 +27,14 @@ function App() {
 
   const sendQrDataToApi = async (token) => {
     try {
-      const response = await fetch(`http://127.0.0.1:4000/tickets/use/${token}`, {
+      const response = await fetch(`https://tiketshalloween.onrender.com/tickets/use/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       });
       const result = await response.json();
-      setApiResponse(result.message || 'Código QR verificado');
+      setApiResponse(result.message || 'Código QR verificado correctamente');
     } catch (err) {
       setApiResponse('Error al verificar el código QR');
     }
@@ -55,9 +55,9 @@ function App() {
 
   return (
     <div id="root">
-      <nav className="navbar navbar-light bg-light shadow-lg p-3 mb-5 bg-white rounded">
+      <nav className="navbar navbar-light bg-light shadow-md p-3 mb-4 bg-white rounded">
         <div className="container justify-content-between">
-          <span className="navbar-brand mb-0 h1 mx-auto">QR APP SCANNER</span>
+          <span className="navbar-brand mb-0 h1 mx-auto">Lector de Qr</span>
           
           {/* Icono de usuario a la derecha */}
           <button className="btn">
@@ -69,7 +69,7 @@ function App() {
       <div className="container mt-5 text-center content">
         {qrData && (
           <p className="mt-3">
-            <strong>Datos del QR:</strong> {qrData}
+            <strong>Token:</strong> {qrData}
           </p>
         )}
         {error && (
@@ -88,7 +88,7 @@ function App() {
             className="btn btn-primary mt-4"
             onClick={() => setScanning(true)}
           >
-            Activar Escáner
+            Escanear qr
           </button>
         ) : (
           <div>
@@ -103,7 +103,7 @@ function App() {
               className="btn btn-secondary mt-3"
               onClick={() => setScanning(false)}
             >
-              Detener Escáner
+              Detener
             </button>
           </div>
         )}
