@@ -27,7 +27,7 @@ function App() {
 
   const sendQrDataToApi = async (token) => {
     try {
-      const response = await fetch(`https://tiketshalloween.onrender.com/tickets/use/${token}`, {
+      const response = await fetch(`https://tikets-halloween-7g5s.vercel.app/tickets/use/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
