@@ -1,61 +1,204 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
+/* Estilos generales para la aplicación de Halloween */
 html, body {
   height: 100%;
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
 }
 
-.content {
-  flex: 1;
+/* Navegación personalizada */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-.footer {
-  background-color: #f1f1f1;
-  text-align: center;
-  padding: 1rem;
+.nav-link.active {
+  color: #ff6b35 !important;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  color: #ff6b35 !important;
+}
+
+/* Contenido principal */
+main {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: white;
+}
+
+/* Tarjetas con efecto glassmorphism */
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.card-header {
+  background: rgba(255, 107, 53, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px 15px 0 0 !important;
+}
+
+/* Tabla personalizada */
+.table {
+  color: white;
+}
+
+.table-dark {
+  background: rgba(255, 107, 53, 0.3);
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.table-hover > tbody > tr:hover > td {
+  background-color: rgba(255, 107, 53, 0.1);
+}
+
+/* Botones personalizados */
+.btn-primary {
+  background: linear-gradient(45deg, #ff6b35, #f7931e);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #e55a2b, #e0841a);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+}
+
+.btn-success {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  border: none;
+  border-radius: 20px;
+}
+
+.btn-danger {
+  background: linear-gradient(45deg, #dc3545, #e74c3c);
+  border: none;
+  border-radius: 20px;
+}
+
+.btn-info {
+  background: linear-gradient(45deg, #17a2b8, #6f42c1);
+  border: none;
+  border-radius: 20px;
+}
+
+/* Badges personalizados */
+.badge {
+  border-radius: 15px;
+  padding: 8px 15px;
+  font-weight: 600;
+}
+
+/* Alertas personalizadas */
+.alert {
+  border-radius: 15px;
+  border: none;
+  backdrop-filter: blur(10px);
+}
+
+.alert-success {
+  background: rgba(40, 167, 69, 0.2);
+  color: #d4edda;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+.alert-danger {
+  background: rgba(220, 53, 69, 0.2);
+  color: #f8d7da;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.alert-info {
+  background: rgba(23, 162, 184, 0.2);
+  color: #d1ecf1;
+  border: 1px solid rgba(23, 162, 184, 0.3);
+}
+
+/* Modal personalizado */
+.modal-content {
+  background: rgba(26, 26, 46, 0.95);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Spinner personalizado */
+.spinner-border {
+  color: #ff6b35;
+}
+
+/* Footer personalizado */
+footer {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Efectos de hover para botones de acción */
+.btn-group .btn {
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  
+  .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card, .alert {
+  animation: fadeIn 0.5s ease-out;
 }
 

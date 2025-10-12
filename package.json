@@ -12,6 +12,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-qr-scanner": "^1.0.0-alpha.11",
+    "react-router-dom": "^7.9.4",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -38,5 +39,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "proxy": "https://tikets-halloween-7g5s.vercel.app",
+  "devDependencies": {
+    "http-proxy-middleware": "^3.0.5"
   }
 }

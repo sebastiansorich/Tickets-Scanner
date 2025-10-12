@@ -1,70 +1,123 @@
-# Getting Started with Create React App
+# Sistema de Tickets Halloween 🎃👻
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Una aplicación React para gestionar tickets virtuales para una fiesta de Halloween, con funcionalidades de escaneo QR y administración completa.
 
-## Available Scripts
+## 🚀 Características
 
-In the project directory, you can run:
+- **Escáner QR**: Escanea tickets usando la cámara del dispositivo
+- **Administración de Tickets**: Panel completo para gestionar todos los tickets
+- **CRUD Completo**: Crear, ver, eliminar tickets
+- **Compartir por WhatsApp**: Envía invitaciones directamente por WhatsApp
+- **Interfaz Moderna**: Diseño con tema Halloween y efectos glassmorphism
+- **Responsive**: Funciona perfectamente en móviles y escritorio
 
-### `npm start`
+## 📁 Estructura del Proyecto
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```
+src/
+├── components/
+│   ├── QRScanner.js          # Componente del escáner QR
+│   └── TicketTable.js        # Tabla para mostrar tickets
+├── pages/
+│   └── TicketAdmin.js        # Página de administración
+├── services/
+│   └── ticketService.js      # Servicio para manejar API
+├── App.js                    # Componente principal con rutas
+├── App.css                   # Estilos personalizados
+└── index.js                  # Punto de entrada
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Tecnologías Utilizadas
 
-### `npm test`
+- **React 18**
+- **React Router DOM** - Para navegación
+- **Bootstrap 5** - Framework CSS
+- **Font Awesome** - Iconos
+- **@yudiel/react-qr-scanner** - Escáner QR
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🔗 Endpoints de la API
 
-### `npm run build`
+La aplicación se conecta a: `https://tikets-halloween-7g5s.vercel.app/`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Endpoints disponibles:
+- `POST /tickets` - Crear nuevo ticket
+- `GET /tickets` - Obtener todos los tickets
+- `POST /tickets/verify/<token>` - Verificar ticket
+- `POST /tickets/use/<token>` - Usar ticket
+- `DELETE /tickets/delete/<token>` - Eliminar por token
+- `DELETE /tickets/delete/<id>` - Eliminar por ID
+- `GET /tickets/<token>/qr` - Generar QR
+- `GET /tickets/<token>/invitation` - Generar invitación
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🎯 Funcionalidades
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Escáner QR (`/`)
+- Escanea códigos QR de tickets
+- Usa la cámara trasera del dispositivo
+- Verifica automáticamente el ticket
+- Muestra estado de verificación
 
-### `npm run eject`
+### Administración (`/admin`)
+- **Lista de Tickets**: Tabla con todos los tickets disponibles
+- **Crear Ticket**: Botón para generar nuevos tickets
+- **Acciones por Ticket**:
+  - 👁️ Ver invitación
+  - 📱 Compartir por WhatsApp
+  - 🗑️ Eliminar ticket
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🎨 Diseño
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Tema Halloween**: Colores naranjas y negros
+- **Glassmorphism**: Efectos de vidrio esmerilado
+- **Responsive**: Adaptable a todos los dispositivos
+- **Animaciones**: Transiciones suaves y efectos hover
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🚀 Instalación y Uso
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. **Instalar dependencias**:
+   ```bash
+   npm install
+   ```
 
-## Learn More
+2. **Ejecutar en desarrollo**:
+   ```bash
+   npm start
+   ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+3. **Construir para producción**:
+   ```bash
+   npm run build
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📱 Uso de la Aplicación
 
-### Code Splitting
+### Para Escanear Tickets:
+1. Ve a la página principal (`/`)
+2. Haz clic en "Escanear QR"
+3. Apunta la cámara al código QR del ticket
+4. El sistema verificará automáticamente el ticket
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Para Administrar Tickets:
+1. Ve a la página de administración (`/admin`)
+2. Ve todos los tickets en la tabla
+3. Usa los botones de acción para cada ticket:
+   - **Ver**: Muestra la invitación completa
+   - **WhatsApp**: Abre WhatsApp con el mensaje predefinido
+   - **Eliminar**: Borra el ticket (con confirmación)
 
-### Analyzing the Bundle Size
+## 🔧 Configuración
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+El servicio de tickets está configurado para usar la URL base:
+```javascript
+const BASE_URL = 'https://tikets-halloween-7g5s.vercel.app';
+```
 
-### Making a Progressive Web App
+Puedes cambiar esta URL en `src/services/ticketService.js` si necesitas apuntar a un servidor diferente.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📄 Licencia
 
-### Advanced Configuration
+© 2024 Sistema de Tickets Halloween - Desarrollado con React
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+¡Disfruta tu fiesta de Halloween! 🎃👻🎉
