@@ -1,6 +1,6 @@
 import { getCorsUrl, corsHeaders } from './corsProxy';
 
-// Usar URL directa siempre (las rutas son /tickets, no /api/tickets)
+// Usar proxy CORS para evitar problemas de CORS
 const BASE_URL = 'https://tikets-halloween-7g5s.vercel.app';
 
 class TicketService {
@@ -27,7 +27,7 @@ class TicketService {
   async createTicket() {
     try {
       console.log('Creando ticket...');
-      const response = await fetch(`${BASE_URL}/tickets`, {
+      const response = await fetch(getCorsUrl('/tickets'), {
         method: 'POST',
         headers: corsHeaders,
         mode: 'cors',
@@ -44,7 +44,7 @@ class TicketService {
   async getTickets() {
     try {
       console.log('Obteniendo tickets...');
-      const response = await fetch(`${BASE_URL}/tickets`, {
+      const response = await fetch(getCorsUrl('/tickets'), {
         method: 'GET',
         headers: corsHeaders,
         mode: 'cors',
@@ -61,7 +61,7 @@ class TicketService {
   async verifyTicket(token) {
     try {
       console.log('Verificando ticket:', token);
-      const response = await fetch(`${BASE_URL}/tickets/verify/${token}`, {
+      const response = await fetch(getCorsUrl(`/tickets/verify/${token}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ class TicketService {
   async useTicket(token) {
     try {
       console.log('Usando ticket:', token);
-      const response = await fetch(`${BASE_URL}/tickets/use/${token}`, {
+      const response = await fetch(getCorsUrl(`/tickets/use/${token}`), {
         method: 'POST',
         headers: corsHeaders,
         mode: 'cors',
@@ -96,7 +96,7 @@ class TicketService {
   async deleteTicketByToken(token) {
     try {
       console.log('Eliminando ticket por token:', token);
-      const response = await fetch(`${BASE_URL}/tickets/delete/${token}`, {
+      const response = await fetch(getCorsUrl(`/tickets/delete/${token}`), {
         method: 'DELETE',
         mode: 'cors',
       });
@@ -111,7 +111,7 @@ class TicketService {
   async deleteTicket(id) {
     try {
       console.log('Eliminando ticket por ID:', id);
-      const response = await fetch(`${BASE_URL}/tickets/delete/${id}`, {
+      const response = await fetch(getCorsUrl(`/tickets/delete/${id}`), {
         method: 'DELETE',
         mode: 'cors',
       });
@@ -126,7 +126,7 @@ class TicketService {
   async generateQR(token) {
     try {
       console.log('Generando QR para token:', token);
-      const response = await fetch(`${BASE_URL}/tickets/${token}/qr`, {
+      const response = await fetch(getCorsUrl(`/tickets/${token}/qr`), {
         mode: 'cors',
       });
       return await this.handleResponse(response);
@@ -140,7 +140,7 @@ class TicketService {
   async generateInvitationWithQR(token) {
     try {
       console.log('Generando invitación para token:', token);
-      const response = await fetch(`${BASE_URL}/tickets/${token}/invitation`, {
+      const response = await fetch(getCorsUrl(`/tickets/${token}/invitation`), {
         mode: 'cors',
       });
       return await this.handleResponse(response);

@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+import pdfService from '../services/pdfService';
 
 const TicketTable = ({ tickets, onDeleteTicket }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sortOrder, setSortOrder] = useState('newest'); // 'newest' o 'oldest'
+  const itemsPerPage = 10;
+
+  // Ordenar tickets por fecha
+  const sortedTickets = useMemo(() => {
+    const sorted = [...tickets].sort((a, b) => {
+      const dateA = new Date(a.date_of_issue);
+      const dateB = new Date(b.date_of_issue);
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+    return sorted;
+  }, [tickets, sortOrder]);
+
+  // Calcular tickets paginados
+  const paginatedTickets = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return sortedTickets.slice(startIndex, endIndex);
+  }, [sortedTickets, currentPage, itemsPerPage]);
+
+  // Calcular total de páginas
+  const totalPages = Math.ceil(sortedTickets.length / itemsPerPage);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
@@ -31,11 +56,63 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
     window.open(invitationUrl, '_blank');
   };
 
-  const handleShareWhatsApp = (token) => {
-    const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
-    const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\n${invitationUrl}`;
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+  const handleDownloadPDF = async (token, event) => {
+    try {
+      // Mostrar indicador de carga
+      const button = event.target.closest('button');
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      button.disabled = true;
+      
+      // Generar PDF
+      const pdfBlob = await pdfService.generateInvitationPDF(token);
+      
+      // Descargar PDF
+      pdfService.downloadPDF(pdfBlob, `invitacion-halloween-${token}.pdf`);
+      
+      // Restaurar botón
+      button.innerHTML = originalHTML;
+      button.disabled = false;
+    } catch (error) {
+      console.error('Error al descargar PDF:', error);
+      
+      // Restaurar botón en caso de error
+      const button = event.target.closest('button');
+      button.innerHTML = '<i class="fas fa-download"></i>';
+      button.disabled = false;
+      
+      alert('Error al generar el PDF. Intenta nuevamente.');
+    }
+  };
+
+  const handleShareWhatsApp = async (token, event) => {
+    try {
+      // Mostrar indicador de carga
+      const button = event.target.closest('button');
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      button.disabled = true;
+      
+      // Generar y compartir PDF
+      await pdfService.sharePDFByWhatsApp(token);
+      
+      // Restaurar botón
+      button.innerHTML = originalHTML;
+      button.disabled = false;
+    } catch (error) {
+      console.error('Error al compartir por WhatsApp:', error);
+      
+      // Restaurar botón en caso de error
+      const button = event.target.closest('button');
+      button.innerHTML = '<i class="fab fa-whatsapp"></i>';
+      button.disabled = false;
+      
+      // Fallback: compartir URL
+      const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
+      const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\n${invitationUrl}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
   };
 
   const copyToClipboard = (text, event) => {
@@ -55,8 +132,65 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
     });
   };
 
+  // Funciones de paginación
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+    setCurrentPage(1); // Reset a la primera página
+  };
+
+  // Generar números de página
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const startPage = Math.max(1, currentPage - 2);
+      const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+      
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
+  };
+
   return (
     <>
+      {/* Filtros y controles */}
+      <div className="row mb-3">
+        <div className="col-md-6">
+          <div className="d-flex align-items-center">
+            <label className="form-label me-3 mb-0">
+              <i className="fas fa-sort me-2"></i>
+              Ordenar por fecha:
+            </label>
+            <select 
+              className="form-select" 
+              value={sortOrder} 
+              onChange={(e) => handleSortChange(e.target.value)}
+              style={{ maxWidth: '200px' }}
+            >
+              <option value="newest">Más recientes primero</option>
+              <option value="oldest">Más antiguos primero</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-6 text-end">
+          <span className="text-muted">
+            Mostrando {((currentPage - 1) * itemsPerPage) + 1} - {Math.min(currentPage * itemsPerPage, sortedTickets.length)} de {sortedTickets.length} tickets
+          </span>
+        </div>
+      </div>
+
       {/* Vista de escritorio - Tabla */}
       <div className="d-none d-lg-block">
         <div className="table-responsive">
@@ -86,7 +220,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
               </tr>
             </thead>
             <tbody>
-              {tickets.map((ticket) => (
+              {paginatedTickets.map((ticket) => (
                 <tr key={ticket.id_ticket} className="align-middle">
                   <td>
                     <span className="fw-bold text-primary">#{ticket.id_ticket}</span>
@@ -122,8 +256,15 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                         <i className="fas fa-eye"></i>
                       </button>
                       <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={(e) => handleDownloadPDF(ticket.token, e)}
+                        title="Descargar PDF"
+                      >
+                        <i className="fas fa-download"></i>
+                      </button>
+                      <button
                         className="btn btn-sm btn-outline-success"
-                        onClick={() => handleShareWhatsApp(ticket.token)}
+                        onClick={(e) => handleShareWhatsApp(ticket.token, e)}
                         title="Compartir por WhatsApp"
                       >
                         <i className="fab fa-whatsapp"></i>
@@ -142,11 +283,51 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
             </tbody>
           </table>
         </div>
+        
+        {/* Paginación para escritorio */}
+        {totalPages > 1 && (
+          <div className="d-flex justify-content-center mt-4">
+            <nav aria-label="Paginación de tickets">
+              <ul className="pagination">
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </button>
+                </li>
+                
+                {getPageNumbers().map(page => (
+                  <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  </li>
+                ))}
+                
+                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
 
       {/* Vista móvil - Cards */}
       <div className="d-lg-none">
-        {tickets.map((ticket) => (
+        {paginatedTickets.map((ticket) => (
           <div key={ticket.id_ticket} className="card mb-3 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-start mb-3">
@@ -192,8 +373,16 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                   Ver
                 </button>
                 <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={(e) => handleDownloadPDF(ticket.token, e)}
+                  title="Descargar PDF"
+                >
+                  <i className="fas fa-download me-1"></i>
+                  PDF
+                </button>
+                <button
                   className="btn btn-sm btn-outline-success"
-                  onClick={() => handleShareWhatsApp(ticket.token)}
+                  onClick={(e) => handleShareWhatsApp(ticket.token, e)}
                   title="Compartir por WhatsApp"
                 >
                   <i className="fab fa-whatsapp me-1"></i>
@@ -211,6 +400,46 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
             </div>
           </div>
         ))}
+        
+        {/* Paginación para móvil */}
+        {totalPages > 1 && (
+          <div className="d-flex justify-content-center mt-4">
+            <nav aria-label="Paginación de tickets">
+              <ul className="pagination pagination-sm">
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <i className="fas fa-chevron-left"></i>
+                  </button>
+                </li>
+                
+                {getPageNumbers().map(page => (
+                  <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  </li>
+                ))}
+                
+                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <i className="fas fa-chevron-right"></i>
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
       </div>
     </>
   );

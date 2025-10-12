@@ -10,20 +10,21 @@ function Navigation() {
   const location = useLocation();
   
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav className="navbar navbar-expand-lg navbar-dark">
       <div className="container">
-        <Link className="navbar-brand fw-bold" to="/">
-          <i className="fas fa-ghost me-2 text-warning"></i>
+        <Link className="navbar-brand" to="/">
+          <i className="fas fa-ghost me-2"></i>
           Halloween Tickets
         </Link>
         
         <button 
-          className="navbar-toggler" 
+          className="navbar-toggler border-0" 
           type="button" 
           data-bs-toggle="collapse" 
           data-bs-target="#navbarNav"
+          style={{ color: '#ffffff' }}
         >
-          <span className="navbar-toggler-icon"></span>
+          <i className="fas fa-bars"></i>
         </button>
         
         <div className="collapse navbar-collapse" id="navbarNav">
@@ -33,7 +34,7 @@ function Navigation() {
                 className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} 
                 to="/"
               >
-                <i className="fas fa-qrcode me-1"></i>
+                <i className="fas fa-qrcode me-2"></i>
                 Escáner
               </Link>
             </li>
@@ -42,7 +43,7 @@ function Navigation() {
                 className={`nav-link ${location.pathname === '/admin' ? 'active' : ''}`} 
                 to="/admin"
               >
-                <i className="fas fa-cogs me-1"></i>
+                <i className="fas fa-cogs me-2"></i>
                 Administración
               </Link>
             </li>
@@ -66,11 +67,11 @@ function App() {
           </Routes>
         </main>
 
-        <footer className="bg-dark text-light py-4 mt-5">
+        <footer className="py-4 mt-5">
           <div className="container text-center">
             <p className="mb-0">
-              <i className="fas fa-ghost me-2 text-warning"></i>
-              © 2024 Sistema de Tickets Halloween - Desarrollado con React
+              <i className="fas fa-ghost me-2" style={{ color: '#3b82f6' }}></i>
+              © 2025 Sistema de Tickets Urubo west
             </p>
           </div>
         </footer>

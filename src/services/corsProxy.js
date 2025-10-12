@@ -1,13 +1,9 @@
-// Proxy CORS alternativo para desarrollo
-const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-const BASE_URL = 'https://tikets-halloween-7g5s.vercel.app';
+import { getApiUrl, getCorsHeaders } from './corsConfig';
 
+// Función para obtener URL con proxy CORS
 export const getCorsUrl = (endpoint) => {
-  return `${CORS_PROXY}${BASE_URL}${endpoint}`;
+  return getApiUrl(endpoint);
 };
 
-export const corsHeaders = {
-  'Content-Type': 'application/json',
-  'Accept': 'application/json',
-  'X-Requested-With': 'XMLHttpRequest',
-};
+// Headers para peticiones CORS
+export const corsHeaders = getCorsHeaders();
