@@ -41,17 +41,6 @@ const QRScanner = () => {
     }
   };
 
-  const clearMessages = () => {
-    setQrData(null);
-    setError(null);
-    setApiResponse(null);
-  };
-
-  const testWithSampleToken = () => {
-    const sampleToken = 'CaELtnjLG82bZ_RTQnd4I51C69xNc85Yj8wLc9pZLQU';
-    setQrData(sampleToken);
-    sendQrDataToApi(sampleToken);
-  };
 
   const previewStyle = {
     height: 240,
@@ -100,23 +89,6 @@ const QRScanner = () => {
         </div>
       )}
 
-      <div className="mt-3">
-        <button
-          className="btn btn-outline-secondary me-2"
-          onClick={clearMessages}
-        >
-          <i className="fas fa-eraser me-1"></i>
-          Limpiar
-        </button>
-        <button
-          className="btn btn-outline-info"
-          onClick={testWithSampleToken}
-          disabled={loading}
-        >
-          <i className="fas fa-flask me-1"></i>
-          Probar con Token de Ejemplo
-        </button>
-      </div>
 
       {!scanning ? (
         <button
