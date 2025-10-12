@@ -1,6 +1,6 @@
 import React from 'react';
 
-const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicket }) => {
+const TicketTable = ({ tickets, onDeleteTicket }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('es-ES', {
@@ -26,13 +26,19 @@ const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicke
     );
   };
 
+  const handleViewInvitation = (token) => {
+    const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
+    window.open(invitationUrl, '_blank');
+  };
+
   const handleShareWhatsApp = (token) => {
-    const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\nTu ticket de acceso es: ${token}\n\n¡Nos vemos en la fiesta!`;
+    const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
+    const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\n${invitationUrl}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text, event) => {
     navigator.clipboard.writeText(text).then(() => {
       // Mostrar feedback visual
       const button = event.target.closest('button');
@@ -92,7 +98,7 @@ const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicke
                       </code>
                       <button
                         className="btn btn-sm btn-outline-secondary"
-                        onClick={() => copyToClipboard(ticket.token)}
+                        onClick={(e) => copyToClipboard(ticket.token, e)}
                         title="Copiar token"
                       >
                         <i className="fas fa-copy"></i>
@@ -110,7 +116,7 @@ const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicke
                     <div className="btn-group" role="group">
                       <button
                         className="btn btn-sm btn-outline-info"
-                        onClick={() => onViewInvitation(ticket.token)}
+                        onClick={() => handleViewInvitation(ticket.token)}
                         title="Ver Invitación"
                       >
                         <i className="fas fa-eye"></i>
@@ -168,7 +174,7 @@ const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicke
                   </code>
                   <button
                     className="btn btn-sm btn-outline-secondary"
-                    onClick={() => copyToClipboard(ticket.token)}
+                    onClick={(e) => copyToClipboard(ticket.token, e)}
                     title="Copiar token"
                   >
                     <i className="fas fa-copy"></i>
@@ -179,7 +185,7 @@ const TicketTable = ({ tickets, onViewInvitation, onShareWhatsApp, onDeleteTicke
               <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button
                   className="btn btn-sm btn-outline-info"
-                  onClick={() => onViewInvitation(ticket.token)}
+                  onClick={() => handleViewInvitation(ticket.token)}
                   title="Ver Invitación"
                 >
                   <i className="fas fa-eye me-1"></i>
