@@ -5,8 +5,6 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import './App.css';
 import QRScanner from './components/QRScanner';
 import TicketAdmin from './pages/TicketAdmin';
-import ApiTest from './components/ApiTest';
-import TicketsList from './pages/TicketsList';
 
 function Navigation() {
   const location = useLocation();
@@ -48,24 +46,6 @@ function Navigation() {
                 Administración
               </Link>
             </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/tickets' ? 'active' : ''}`} 
-                to="/tickets"
-              >
-                <i className="fas fa-ticket-alt me-1"></i>
-                Lista de Tickets
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link 
-                className={`nav-link ${location.pathname === '/test' ? 'active' : ''}`} 
-                to="/test"
-              >
-                <i className="fas fa-vial me-1"></i>
-                Prueba API
-              </Link>
-            </li>
           </ul>
         </div>
       </div>
@@ -83,8 +63,6 @@ function App() {
           <Routes>
             <Route path="/" element={<QRScanner />} />
             <Route path="/admin" element={<TicketAdmin />} />
-            <Route path="/tickets" element={<TicketsList />} />
-            <Route path="/test" element={<ApiTest />} />
           </Routes>
         </main>
 
