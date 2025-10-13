@@ -109,7 +109,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       
       // Fallback: compartir URL
       const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
-      const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\n${invitationUrl}`;
+      const message = `🎃👻\n\n${invitationUrl}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }

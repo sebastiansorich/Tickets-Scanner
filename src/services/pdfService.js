@@ -14,17 +14,6 @@ class PDFService {
         format: 'a4'
       });
 
-      // Agregar título
-      pdf.setFontSize(20);
-      pdf.setTextColor(59, 130, 246); // Azul corporativo
-      pdf.text('Invitación Halloween', 105, 20, { align: 'center' });
-
-      // Agregar información del ticket
-      pdf.setFontSize(12);
-      pdf.setTextColor(0, 0, 0);
-      pdf.text(`Token: ${token}`, 20, 40);
-      pdf.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, 20, 50);
-
       // Intentar cargar la imagen con diferentes métodos
       try {
         // Método 1: Usar proxy CORS para obtener la imagen como blob
@@ -47,21 +36,37 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen quepa en el PDF
-              const imgWidth = 150; // mm
-              const imgHeight = (img.height * imgWidth) / img.width;
+              // Calcular dimensiones para que la imagen ocupe toda la página A4
+              const pageWidth = 210; // mm (ancho A4)
+              const pageHeight = 297; // mm (alto A4)
               
-              // Centrar la imagen
-              const x = (210 - imgWidth) / 2; // 210mm es el ancho de A4
-              const y = 70;
+              // Calcular dimensiones manteniendo proporción
+              const imgAspectRatio = img.width / img.height;
+              const pageAspectRatio = pageWidth / pageHeight;
               
-              // Agregar la imagen al PDF
+              let imgWidth, imgHeight, x, y;
+              
+              if (imgAspectRatio > pageAspectRatio) {
+                // La imagen es más ancha que la página
+                imgWidth = pageWidth;
+                imgHeight = pageWidth / imgAspectRatio;
+                x = 0;
+                y = (pageHeight - imgHeight) / 2;
+              } else {
+                // La imagen es más alta que la página
+                imgHeight = pageHeight;
+                imgWidth = pageHeight * imgAspectRatio;
+                x = (pageWidth - imgWidth) / 2;
+                y = 0;
+              }
+              
+              // Agregar la imagen al PDF ocupando toda la página
               pdf.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
               
-              // Agregar pie de página
-              pdf.setFontSize(10);
-              pdf.setTextColor(100, 100, 100);
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, 280, { align: 'center' });
+              // Agregar pie de página con color más visible
+              pdf.setFontSize(8);
+              pdf.setTextColor(60, 60, 60); // Gris más oscuro
+              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, pageHeight - 10, { align: 'center' });
               
               // Limpiar URL del blob
               URL.revokeObjectURL(imgUrl);
@@ -94,21 +99,37 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen quepa en el PDF
-              const imgWidth = 150; // mm
-              const imgHeight = (img.height * imgWidth) / img.width;
+              // Calcular dimensiones para que la imagen ocupe toda la página A4
+              const pageWidth = 210; // mm (ancho A4)
+              const pageHeight = 297; // mm (alto A4)
               
-              // Centrar la imagen
-              const x = (210 - imgWidth) / 2; // 210mm es el ancho de A4
-              const y = 70;
+              // Calcular dimensiones manteniendo proporción
+              const imgAspectRatio = img.width / img.height;
+              const pageAspectRatio = pageWidth / pageHeight;
               
-              // Agregar la imagen al PDF
+              let imgWidth, imgHeight, x, y;
+              
+              if (imgAspectRatio > pageAspectRatio) {
+                // La imagen es más ancha que la página
+                imgWidth = pageWidth;
+                imgHeight = pageWidth / imgAspectRatio;
+                x = 0;
+                y = (pageHeight - imgHeight) / 2;
+              } else {
+                // La imagen es más alta que la página
+                imgHeight = pageHeight;
+                imgWidth = pageHeight * imgAspectRatio;
+                x = (pageWidth - imgWidth) / 2;
+                y = 0;
+              }
+              
+              // Agregar la imagen al PDF ocupando toda la página
               pdf.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
               
-              // Agregar pie de página
-              pdf.setFontSize(10);
-              pdf.setTextColor(100, 100, 100);
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, 280, { align: 'center' });
+              // Agregar pie de página con color más visible
+              pdf.setFontSize(8);
+              pdf.setTextColor(60, 60, 60); // Gris más oscuro
+              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, pageHeight - 10, { align: 'center' });
               
               // Generar el PDF como blob
               const pdfBlob = pdf.output('blob');
@@ -130,10 +151,10 @@ class PDFService {
               pdf.setFontSize(10);
               pdf.text(invitationUrl, 105, 140, { align: 'center' });
               
-              // Agregar pie de página
-              pdf.setFontSize(10);
-              pdf.setTextColor(100, 100, 100);
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, 280, { align: 'center' });
+              // Agregar pie de página con color más visible
+              pdf.setFontSize(8);
+              pdf.setTextColor(60, 60, 60); // Gris más oscuro
+              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, 287, { align: 'center' });
               
               // Generar el PDF como blob
               const pdfBlob = pdf.output('blob');
@@ -207,7 +228,7 @@ class PDFService {
       console.error('Error al generar PDF:', error);
       // Fallback: compartir URL de la imagen
       const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
-      const message = `¡Hola! Te invito a la fiesta de Halloween 🎃👻\n\nTu invitación: ${invitationUrl}`;
+      const message = `🎃👻`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }
