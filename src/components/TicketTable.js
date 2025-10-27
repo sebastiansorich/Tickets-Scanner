@@ -56,7 +56,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
     window.open(invitationUrl, '_blank');
   };
 
-  const handleDownloadPDF = async (token, event) => {
+  const handleDownloadPDF = async (idTicket, token, event) => {
     try {
       // Mostrar indicador de carga
       const button = event.target.closest('button');
@@ -68,7 +68,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       const pdfBlob = await pdfService.generateInvitationPDF(token);
       
       // Descargar PDF
-      pdfService.downloadPDF(pdfBlob, `invitacion-halloween-${token}.pdf`);
+      pdfService.downloadPDF(pdfBlob, `Halloween-2025-${idTicket}.pdf`);
       
       // Restaurar botón
       button.innerHTML = originalHTML;
@@ -170,7 +170,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
         <div className="col-md-6">
           <div className="d-flex align-items-center">
             <label className="form-label me-3 mb-0">
-              <i className="fas fa-sort me-2"></i>
+              <i className="fas fa-sort me-2 text-white"></i>
               Ordenar por fecha:
             </label>
             <select 
@@ -235,13 +235,13 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                         onClick={(e) => copyToClipboard(ticket.token, e)}
                         title="Copiar token"
                       >
-                        <i className="fas fa-copy"></i>
+                        <i className="fas fa-copy text-white"></i>
                       </button>
                     </div>
                   </td>
                   <td>
                     <small className="text-muted">
-                      <i className="fas fa-clock me-1"></i>
+                      <i className="fas fa-clock me-1 text-white"></i>
                       {formatDate(ticket.date_of_issue)}
                     </small>
                   </td>
@@ -257,7 +257,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                       </button>
                       <button
                         className="btn btn-sm btn-outline-primary"
-                        onClick={(e) => handleDownloadPDF(ticket.token, e)}
+                        onClick={(e) => handleDownloadPDF(ticket.id_ticket, ticket.token, e)}
                         title="Descargar PDF"
                       >
                         <i className="fas fa-download"></i>
@@ -374,7 +374,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                 </button>
                 <button
                   className="btn btn-sm btn-outline-primary"
-                  onClick={(e) => handleDownloadPDF(ticket.token, e)}
+                  onClick={(e) => handleDownloadPDF(ticket.id_ticket, ticket.token, e)}
                   title="Descargar PDF"
                 >
                   <i className="fas fa-download me-1"></i>
