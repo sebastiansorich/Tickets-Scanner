@@ -169,7 +169,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       <div className="row mb-3">
         <div className="col-md-6">
           <div className="d-flex align-items-center">
-            <label className="form-label me-3 mb-0">
+            <label className="form-label me-3 mb-0 text-white">
               <i className="fas fa-sort me-2 text-white"></i>
               Ordenar por fecha:
             </label>
@@ -235,12 +235,12 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                         onClick={(e) => copyToClipboard(ticket.token, e)}
                         title="Copiar token"
                       >
-                        <i className="fas fa-copy text-white"></i>
+                        <i className="fas fa-copy text-black"></i>
                       </button>
                     </div>
                   </td>
                   <td>
-                    <small className="text-muted">
+                    <small className="text-muted text-black">
                       <i className="fas fa-clock me-1 text-white"></i>
                       {formatDate(ticket.date_of_issue)}
                     </small>
