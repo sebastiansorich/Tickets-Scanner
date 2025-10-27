@@ -7,12 +7,7 @@ class PDFService {
     try {
       const invitationUrl = `https://tikets-halloween-7g5s.vercel.app/tickets/${token}/invitation`;
       
-      // Crear un nuevo PDF
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
+      // El PDF se creará según el tamaño real de la imagen cuando cargue
 
       // Intentar cargar la imagen con diferentes métodos
       try {
@@ -36,20 +31,16 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen CUBRA toda la página A4 (sin bordes)
-              const pageWidth = 210; // mm (ancho A4)
-              const pageHeight = 297; // mm (alto A4)
-              
-              // Escalado tipo "cover": asegura cubrir por completo, pudiendo recortar
-              const scale = Math.max(pageWidth / img.width, pageHeight / img.height);
-              const bleed = 1; // mm de sangrado para evitar líneas blancas
-              const scaledWidth = img.width * scale;
-              const scaledHeight = img.height * scale;
-              const x = (pageWidth - scaledWidth) / 2 - bleed;
-              const y = (pageHeight - scaledHeight) / 2 - bleed;
-              
-              // Agregar la imagen ligeramente sobredimensionada para eliminar bordes
-              pdf.addImage(img, 'PNG', x, y, scaledWidth + 2 * bleed, scaledHeight + 2 * bleed);
+              // Crear PDF con el mismo tamaño de la imagen (sin recortes ni bordes)
+              const orientation = img.width > img.height ? 'landscape' : 'portrait';
+              const pdf = new jsPDF({
+                orientation,
+                unit: 'px',
+                format: [img.width, img.height]
+              });
+
+              // Agregar la imagen ocupando exactamente la página
+              pdf.addImage(img, 'PNG', 0, 0, img.width, img.height);
               
               // Limpiar URL del blob
               URL.revokeObjectURL(imgUrl);
@@ -82,20 +73,16 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen CUBRA toda la página A4 (sin bordes)
-              const pageWidth = 210; // mm (ancho A4)
-              const pageHeight = 297; // mm (alto A4)
-              
-              // Escalado tipo "cover": asegura cubrir por completo, pudiendo recortar
-              const scale = Math.max(pageWidth / img.width, pageHeight / img.height);
-              const bleed = 1; // mm de sangrado para evitar líneas blancas
-              const scaledWidth = img.width * scale;
-              const scaledHeight = img.height * scale;
-              const x = (pageWidth - scaledWidth) / 2 - bleed;
-              const y = (pageHeight - scaledHeight) / 2 - bleed;
-              
-              // Agregar la imagen ligeramente sobredimensionada para eliminar bordes
-              pdf.addImage(img, 'PNG', x, y, scaledWidth + 2 * bleed, scaledHeight + 2 * bleed);
+              // Crear PDF con el mismo tamaño de la imagen (sin recortes ni bordes)
+              const orientation = img.width > img.height ? 'landscape' : 'portrait';
+              const pdf = new jsPDF({
+                orientation,
+                unit: 'px',
+                format: [img.width, img.height]
+              });
+
+              // Agregar la imagen ocupando exactamente la página
+              pdf.addImage(img, 'PNG', 0, 0, img.width, img.height);
               
               // Generar el PDF como blob
               const pdfBlob = pdf.output('blob');
@@ -109,6 +96,8 @@ class PDFService {
             console.log('Error al cargar imagen, generando PDF sin imagen');
             // Método 3: Generar PDF sin imagen como último recurso
             try {
+              // Fallback: crear PDF A4 con mensaje informativo
+              const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
               // Agregar mensaje de que la imagen no se pudo cargar
               pdf.setFontSize(14);
               pdf.setTextColor(100, 100, 100);
