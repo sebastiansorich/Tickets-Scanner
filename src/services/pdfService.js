@@ -36,37 +36,20 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen ocupe toda la página A4
+              // Calcular dimensiones para que la imagen CUBRA toda la página A4 (sin bordes)
               const pageWidth = 210; // mm (ancho A4)
               const pageHeight = 297; // mm (alto A4)
               
-              // Calcular dimensiones manteniendo proporción
-              const imgAspectRatio = img.width / img.height;
-              const pageAspectRatio = pageWidth / pageHeight;
+              // Escalado tipo "cover": asegura cubrir por completo, pudiendo recortar
+              const scale = Math.max(pageWidth / img.width, pageHeight / img.height);
+              const bleed = 1; // mm de sangrado para evitar líneas blancas
+              const scaledWidth = img.width * scale;
+              const scaledHeight = img.height * scale;
+              const x = (pageWidth - scaledWidth) / 2 - bleed;
+              const y = (pageHeight - scaledHeight) / 2 - bleed;
               
-              let imgWidth, imgHeight, x, y;
-              
-              if (imgAspectRatio > pageAspectRatio) {
-                // La imagen es más ancha que la página
-                imgWidth = pageWidth;
-                imgHeight = pageWidth / imgAspectRatio;
-                x = 0;
-                y = (pageHeight - imgHeight) / 2;
-              } else {
-                // La imagen es más alta que la página
-                imgHeight = pageHeight;
-                imgWidth = pageHeight * imgAspectRatio;
-                x = (pageWidth - imgWidth) / 2;
-                y = 0;
-              }
-              
-              // Agregar la imagen al PDF ocupando toda la página
-              pdf.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
-              
-              // Agregar pie de página con color más visible
-              pdf.setFontSize(8);
-              pdf.setTextColor(60, 60, 60); // Gris más oscuro
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, pageHeight - 10, { align: 'center' });
+              // Agregar la imagen ligeramente sobredimensionada para eliminar bordes
+              pdf.addImage(img, 'PNG', x, y, scaledWidth + 2 * bleed, scaledHeight + 2 * bleed);
               
               // Limpiar URL del blob
               URL.revokeObjectURL(imgUrl);
@@ -99,37 +82,20 @@ class PDFService {
         return new Promise((resolve, reject) => {
           img.onload = () => {
             try {
-              // Calcular dimensiones para que la imagen ocupe toda la página A4
+              // Calcular dimensiones para que la imagen CUBRA toda la página A4 (sin bordes)
               const pageWidth = 210; // mm (ancho A4)
               const pageHeight = 297; // mm (alto A4)
               
-              // Calcular dimensiones manteniendo proporción
-              const imgAspectRatio = img.width / img.height;
-              const pageAspectRatio = pageWidth / pageHeight;
+              // Escalado tipo "cover": asegura cubrir por completo, pudiendo recortar
+              const scale = Math.max(pageWidth / img.width, pageHeight / img.height);
+              const bleed = 1; // mm de sangrado para evitar líneas blancas
+              const scaledWidth = img.width * scale;
+              const scaledHeight = img.height * scale;
+              const x = (pageWidth - scaledWidth) / 2 - bleed;
+              const y = (pageHeight - scaledHeight) / 2 - bleed;
               
-              let imgWidth, imgHeight, x, y;
-              
-              if (imgAspectRatio > pageAspectRatio) {
-                // La imagen es más ancha que la página
-                imgWidth = pageWidth;
-                imgHeight = pageWidth / imgAspectRatio;
-                x = 0;
-                y = (pageHeight - imgHeight) / 2;
-              } else {
-                // La imagen es más alta que la página
-                imgHeight = pageHeight;
-                imgWidth = pageHeight * imgAspectRatio;
-                x = (pageWidth - imgWidth) / 2;
-                y = 0;
-              }
-              
-              // Agregar la imagen al PDF ocupando toda la página
-              pdf.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
-              
-              // Agregar pie de página con color más visible
-              pdf.setFontSize(8);
-              pdf.setTextColor(60, 60, 60); // Gris más oscuro
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, pageHeight - 10, { align: 'center' });
+              // Agregar la imagen ligeramente sobredimensionada para eliminar bordes
+              pdf.addImage(img, 'PNG', x, y, scaledWidth + 2 * bleed, scaledHeight + 2 * bleed);
               
               // Generar el PDF como blob
               const pdfBlob = pdf.output('blob');
@@ -151,10 +117,7 @@ class PDFService {
               pdf.setFontSize(10);
               pdf.text(invitationUrl, 105, 140, { align: 'center' });
               
-              // Agregar pie de página con color más visible
-              pdf.setFontSize(8);
-              pdf.setTextColor(60, 60, 60); // Gris más oscuro
-              pdf.text('Sistema de Tickets Halloween - Urubó West', 105, 287, { align: 'center' });
+              // (Sin pie de página para permitir pantalla completa)
               
               // Generar el PDF como blob
               const pdfBlob = pdf.output('blob');
