@@ -94,10 +94,10 @@ const TicketAdmin = () => {
     window.open(invitationUrl, '_blank');
   };
 
-  const handleDownloadPDFFromModal = async (token, idTicket) => {
+  const handleDownloadPDFFromModal = async (token) => {
     try {
       const pdfBlob = await pdfService.generateInvitationPDF(token);
-      pdfService.downloadPDF(pdfBlob, `Halloween-2025-${idTicket}.pdf`);
+      pdfService.downloadPDF(pdfBlob, `invitacion-halloween-${token}.pdf`);
     } catch (error) {
       console.error('Error al descargar PDF:', error);
       alert('Error al generar el PDF. Intenta nuevamente.');
@@ -279,7 +279,7 @@ const TicketAdmin = () => {
                     </button>
                     <button
                       className="btn btn-outline-primary"
-                      onClick={() => handleDownloadPDFFromModal(newTicket.token, newTicket.id_ticket)}
+                      onClick={() => handleDownloadPDFFromModal(newTicket.token)}
                       title="Descargar PDF"
                     >
                       <i className="fas fa-download me-2"></i>

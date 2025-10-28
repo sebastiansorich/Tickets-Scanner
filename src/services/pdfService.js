@@ -132,7 +132,7 @@ class PDFService {
     const url = URL.createObjectURL(pdfBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = filename || 'Halloween-2025.pdf';
+    link.download = filename || 'invitacion-halloween.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -140,21 +140,13 @@ class PDFService {
   }
 
   // Compartir PDF por WhatsApp
-  async sharePDFByWhatsApp(token) {
+  async sharePDFByWhatsApp(token, idTicket) {
     try {
       // Generar el PDF
       const pdfBlob = await this.generateInvitationPDF(token);
       
       // Crear archivo para compartir
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      const hh = String(now.getHours()).padStart(2, '0');
-      const mm = String(now.getMinutes()).padStart(2, '0');
-      const ss = String(now.getSeconds()).padStart(2, '0');
-      const timestamp = `${y}${m}${d}-${hh}${mm}${ss}`;
-      const fileName = `Halloween-2025-${timestamp}.pdf`;
+      const fileName = `Halloween-2025-${idTicket}.pdf`;
       const file = new File([pdfBlob], fileName, { type: 'application/pdf' });
       
       // Intentar usar Web Share API nativa (funciona en móviles)

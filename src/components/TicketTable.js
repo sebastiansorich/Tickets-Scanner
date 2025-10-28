@@ -56,7 +56,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
     window.open(invitationUrl, '_blank');
   };
 
-  const handleDownloadPDF = async (idTicket, token, event) => {
+  const handleDownloadPDF = async (token, event) => {
     try {
       // Mostrar indicador de carga
       const button = event.target.closest('button');
@@ -68,7 +68,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       const pdfBlob = await pdfService.generateInvitationPDF(token);
       
       // Descargar PDF
-      pdfService.downloadPDF(pdfBlob, `Halloween-2025-${idTicket}.pdf`);
+      pdfService.downloadPDF(pdfBlob, `invitacion-halloween-${token}.pdf`);
       
       // Restaurar botón
       button.innerHTML = originalHTML;
@@ -85,7 +85,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
     }
   };
 
-  const handleShareWhatsApp = async (token, event) => {
+  const handleShareWhatsApp = async (idTicket, token, event) => {
     try {
       // Mostrar indicador de carga
       const button = event.target.closest('button');
@@ -93,8 +93,8 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
       button.disabled = true;
       
-      // Generar y compartir PDF
-      await pdfService.sharePDFByWhatsApp(token);
+      // Generar y compartir PDF con nombre que incluye el ID del ticket
+      await pdfService.sharePDFByWhatsApp(token, idTicket);
       
       // Restaurar botón
       button.innerHTML = originalHTML;
@@ -169,8 +169,8 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
       <div className="row mb-3">
         <div className="col-md-6">
           <div className="d-flex align-items-center">
-            <label className="form-label me-3 mb-0 text-white">
-              <i className="fas fa-sort me-2 text-white"></i>
+            <label className="form-label me-3 mb-0">
+              <i className="fas fa-sort me-2"></i>
               Ordenar por fecha:
             </label>
             <select 
@@ -235,13 +235,13 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                         onClick={(e) => copyToClipboard(ticket.token, e)}
                         title="Copiar token"
                       >
-                        <i className="fas fa-copy text-black"></i>
+                        <i className="fas fa-copy"></i>
                       </button>
                     </div>
                   </td>
                   <td>
-                    <small className="text-muted text-black">
-                      <i className="fas fa-clock me-1 text-white"></i>
+                    <small className="text-muted">
+                      <i className="fas fa-clock me-1"></i>
                       {formatDate(ticket.date_of_issue)}
                     </small>
                   </td>
@@ -257,14 +257,14 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                       </button>
                       <button
                         className="btn btn-sm btn-outline-primary"
-                        onClick={(e) => handleDownloadPDF(ticket.id_ticket, ticket.token, e)}
+                        onClick={(e) => handleDownloadPDF(ticket.token, e)}
                         title="Descargar PDF"
                       >
                         <i className="fas fa-download"></i>
                       </button>
                       <button
                         className="btn btn-sm btn-outline-success"
-                        onClick={(e) => handleShareWhatsApp(ticket.token, e)}
+                        onClick={(e) => handleShareWhatsApp(ticket.id_ticket, ticket.token, e)}
                         title="Compartir por WhatsApp"
                       >
                         <i className="fab fa-whatsapp"></i>
@@ -374,7 +374,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                 </button>
                 <button
                   className="btn btn-sm btn-outline-primary"
-                  onClick={(e) => handleDownloadPDF(ticket.id_ticket, ticket.token, e)}
+                  onClick={(e) => handleDownloadPDF(ticket.token, e)}
                   title="Descargar PDF"
                 >
                   <i className="fas fa-download me-1"></i>
@@ -382,7 +382,7 @@ const TicketTable = ({ tickets, onDeleteTicket }) => {
                 </button>
                 <button
                   className="btn btn-sm btn-outline-success"
-                  onClick={(e) => handleShareWhatsApp(ticket.token, e)}
+                  onClick={(e) => handleShareWhatsApp(ticket.id_ticket, ticket.token, e)}
                   title="Compartir por WhatsApp"
                 >
                   <i className="fab fa-whatsapp me-1"></i>
